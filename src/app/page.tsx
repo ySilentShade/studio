@@ -376,7 +376,7 @@ export default function PropertyDescriptionPage() {
                   readOnly
                   placeholder="A descrição gerada aparecerá aqui..."
                   value={generatedDescription}
-                  className="resize-none h-20 text-sm leading-relaxed"
+                  className="resize-none h-60 text-sm leading-relaxed"
                 />
               </CardContent>
               <CardFooter>
