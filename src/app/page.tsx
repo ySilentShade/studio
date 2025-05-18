@@ -376,7 +376,7 @@ export default function PropertyDescriptionPage() {
                   readOnly
                   placeholder="A descrição gerada aparecerá aqui..."
                   value={generatedDescription}
-                  className="flex-grow resize-none min-h-[200px] text-sm leading-relaxed"
+                  className="resize-none h-20 text-sm leading-relaxed"
                 />
               </CardContent>
               <CardFooter>
@@ -394,3 +394,4 @@ export default function PropertyDescriptionPage() {
     </div>
   );
 }
+
