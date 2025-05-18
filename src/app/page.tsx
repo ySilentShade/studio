@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -189,7 +190,7 @@ export default function PropertyDescriptionPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <header className="py-6 px-4 md:px-8 flex items-center gap-3 border-b">
+      <header className="py-6 px-4 md:px-8 flex items-center justify-center gap-3 border-b">
         <HouseIcon />
         <h1 className="text-2xl font-semibold text-foreground">
           Descrição de Casas
@@ -375,7 +376,7 @@ export default function PropertyDescriptionPage() {
                   readOnly
                   placeholder="A descrição gerada aparecerá aqui..."
                   value={generatedDescription}
-                  className="flex-grow resize-none min-h-[300px] text-sm leading-relaxed"
+                  className="flex-grow resize-none min-h-[200px] text-sm leading-relaxed"
                 />
               </CardContent>
               <CardFooter>
