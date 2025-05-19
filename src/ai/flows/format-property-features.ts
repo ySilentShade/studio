@@ -1,3 +1,4 @@
+
 // src/ai/flows/format-property-features.ts
 'use server';
 /**
@@ -70,7 +71,19 @@ const formatPropertyFeaturesFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await formatPropertyFeaturesPrompt(input);
-    let formattedFeatures = output!.formattedFeatures;
+
+    // Check if the output or the specific field is missing
+    if (!output || typeof output.formattedFeatures !== 'string') {
+      console.error(
+        'AI flow received undefined output or missing/invalid formattedFeatures from prompt. Full prompt output:',
+        output
+      );
+      throw new Error(
+        'A IA não retornou uma formatação válida para as características. O resultado pode estar vazio ou malformado.'
+      );
+    }
+
+    let formattedFeatures = output.formattedFeatures;
 
     // Ensure the output ends with a semicolon if it's not empty
     if (formattedFeatures && !formattedFeatures.endsWith(';')) {
