@@ -34,6 +34,7 @@ export async function formatPropertyFeatures(
 
 const formatPropertyFeaturesPrompt = ai.definePrompt({
   name: 'formatPropertyFeaturesPrompt',
+  model: 'googleai/gemini-2.0-flash', // Especifica o modelo a ser usado
   input: {schema: FormatPropertyFeaturesInputSchema},
   output: {schema: FormatPropertyFeaturesOutputSchema},
   prompt: `You are an AI assistant that specializes in formatting property features for real estate listings. Your goal is to transform a plain text input of property features into a concise, well-formatted list that is appealing and easy to read.
