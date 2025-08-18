@@ -10,7 +10,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'zod'; // Alterado de 'genkit' para 'zod'
+import {z} from 'zod';
 
 const FormatPropertyFeaturesInputSchema = z.object({
   featuresText: z
@@ -22,7 +22,7 @@ export type FormatPropertyFeaturesInput = z.infer<typeof FormatPropertyFeaturesI
 const FormatPropertyFeaturesOutputSchema = z.object({
   formattedFeatures: z
     .string()
-    .describe('The formatted property features as a concise list.'),
+    .describe('The formatted property features as a concise list, with each feature on a new line.'),
 });
 export type FormatPropertyFeaturesOutput = z.infer<typeof FormatPropertyFeaturesOutputSchema>;
 
@@ -37,18 +37,18 @@ const formatPropertyFeaturesPrompt = ai.definePrompt({
   model: 'googleai/gemini-2.0-flash',
   input: {schema: FormatPropertyFeaturesInputSchema},
   output: {schema: FormatPropertyFeaturesOutputSchema},
-  prompt: `You are an AI assistant that specializes in formatting property features for real estate listings. Your goal is to transform a plain text input of property features into a concise, well-formatted list that is appealing and easy to read.
+  prompt: `You are an AI assistant that specializes in formatting property features for real estate listings.
+Your goal is to transform a plain text input of property features into a concise, well-formatted list that is appealing and easy to read.
 
-Instructions:
-
-*   List each feature on a new line.
+CRITICAL INSTRUCTIONS:
+*   Each feature MUST be on a new line. This is a strict requirement.
 *   Start each feature with "✅ ".
 *   End each feature with a semicolon ";".
 *   Use numerals for numbers (e.g., "3 quartos" instead of "três quartos").
 *   Be concise, extracting only the most important and direct characteristics.
 *   Remove any original punctuation or formatting from the input text.
 
-Example:
+EXAMPLE (Follow this format exactly):
 
 Input: "Amplo apartamento com 3 quartos, sendo uma suíte, sala espaçosa com varanda gourmet, cozinha planejada, área de serviço completa, 2 vagas de garagem."
 
@@ -60,7 +60,8 @@ Output:
 ✅ 2 vagas de garagem;
 
 
-Here is the features text: {{{featuresText}}}
+Now, process the following features text following all the rules above:
+{{{featuresText}}}
 `,
 });
 
@@ -73,7 +74,6 @@ const formatPropertyFeaturesFlow = ai.defineFlow(
   async input => {
     const {output} = await formatPropertyFeaturesPrompt(input);
 
-    // Check if the output or the specific field is missing
     if (!output || typeof output.formattedFeatures !== 'string') {
       console.error(
         'AI flow received undefined output or missing/invalid formattedFeatures from prompt. Full prompt output:',
@@ -86,11 +86,16 @@ const formatPropertyFeaturesFlow = ai.defineFlow(
 
     let formattedFeatures = output.formattedFeatures;
 
-    // Ensure the output ends with a semicolon if it's not empty
-    if (formattedFeatures && !formattedFeatures.endsWith(';')) {
-      formattedFeatures += ';';
+    if (formattedFeatures && !formattedFeatures.trim().endsWith(';')) {
+        const lines = formattedFeatures.trim().split('\n');
+        const lastLine = lines[lines.length - 1];
+        if (lastLine) {
+            lines[lines.length - 1] = lastLine.endsWith(';') ? lastLine : lastLine + ';';
+            formattedFeatures = lines.join('\n');
+        }
     }
-
-    return {formattedFeatures: formattedFeatures};
+    
+    // Ensure the final output is just the text, without extra spaces at the beginning or end.
+    return {formattedFeatures: formattedFeatures.trim()};
   }
 );
