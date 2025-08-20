@@ -118,6 +118,9 @@ export default function PropertyDescriptionPage() {
       
       const formattedValor = formatCurrency(data.valor);
       const location = `${data.bairro.toUpperCase()} - ${data.cidade.toUpperCase()}/MG`;
+      
+      const formattedAreaTotal = new Intl.NumberFormat('pt-BR').format(data.areaTotal);
+      const formattedAreaPrivada = new Intl.NumberFormat('pt-BR').format(data.areaPrivada);
 
       const descriptionParts = [
         location,
@@ -134,8 +137,8 @@ export default function PropertyDescriptionPage() {
       descriptionParts.push("CARACTERÍSTICAS PRINCIPAIS:");
       descriptionParts.push(aiResult.formattedFeatures.trimStart());
       descriptionParts.push("");
-      descriptionParts.push(`Área Total: ${data.areaTotal} m²`);
-      descriptionParts.push(`Área Privada: ${data.areaPrivada} m²`);
+      descriptionParts.push(`Área Total: ${formattedAreaTotal} m²`);
+      descriptionParts.push(`Área Privada: ${formattedAreaPrivada} m²`);
       descriptionParts.push(`💰VALOR: ${formattedValor}`);
       descriptionParts.push("");
       descriptionParts.push("Agende uma visita hoje mesmo com nossa equipe:");
@@ -276,7 +279,7 @@ export default function PropertyDescriptionPage() {
                               const parsed = parseFloat(value.replace(',', '.'));
                               field.onChange(isNaN(parsed) ? '' : parsed);
                            }}
-                           value={field.value === 0 ? '' : field.value}
+                           value={field.value === 0 ? '' : String(field.value).replace(/\./g, ',')}
                           />
                         </FormControl>
                         <FormMessage />
@@ -296,7 +299,7 @@ export default function PropertyDescriptionPage() {
                               const parsed = parseFloat(value.replace(',', '.'));
                               field.onChange(isNaN(parsed) ? '' : parsed);
                            }}
-                           value={field.value === 0 ? '' : field.value}
+                           value={field.value === 0 ? '' : String(field.value).replace(/\./g, ',')}
                           />
                         </FormControl>
                         <FormMessage />
