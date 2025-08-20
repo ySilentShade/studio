@@ -270,8 +270,13 @@ export default function PropertyDescriptionPage() {
                       <FormItem>
                         <FormLabel>Área Total (m²)</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="Ex: 120" {...field} 
-                           onChange={e => field.onChange(e.target.value === '' ? '' : parseFloat(e.target.value))}
+                          <Input type="text" placeholder="Ex: 120" {...field} 
+                           onChange={e => {
+                              const value = e.target.value.replace(/\./g, '');
+                              const parsed = parseFloat(value.replace(',', '.'));
+                              field.onChange(isNaN(parsed) ? '' : parsed);
+                           }}
+                           value={field.value === 0 ? '' : field.value}
                           />
                         </FormControl>
                         <FormMessage />
@@ -285,8 +290,13 @@ export default function PropertyDescriptionPage() {
                       <FormItem>
                         <FormLabel>Área Privada (m²)</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="Ex: 90" {...field} 
-                           onChange={e => field.onChange(e.target.value === '' ? '' : parseFloat(e.target.value))}
+                          <Input type="text" placeholder="Ex: 90" {...field} 
+                           onChange={e => {
+                              const value = e.target.value.replace(/\./g, '');
+                              const parsed = parseFloat(value.replace(',', '.'));
+                              field.onChange(isNaN(parsed) ? '' : parsed);
+                           }}
+                           value={field.value === 0 ? '' : field.value}
                           />
                         </FormControl>
                         <FormMessage />
@@ -394,4 +404,3 @@ export default function PropertyDescriptionPage() {
     </div>
   );
 }
-

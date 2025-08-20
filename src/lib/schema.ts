@@ -7,10 +7,12 @@ export const propertyFormSchema = z.object({
   cidade: z.string().min(1, { message: "Cidade é obrigatória." }),
   areaTotal: z.coerce
     .number({ invalid_type_error: "Área total inválida." })
-    .positive({ message: "Área total deve ser um número positivo." }),
+    .positive({ message: "Área total deve ser um número positivo." })
+    .or(z.literal(0)),
   areaPrivada: z.coerce
     .number({ invalid_type_error: "Área privada inválida." })
-    .positive({ message: "Área privada deve ser um número positivo." }),
+    .positive({ message: "Área privada deve ser um número positivo." })
+    .or(z.literal(0)),
   descricaoAdicional: z.string().optional(),
   caracteristicasPrincipais: z.string().min(1, { message: "Características são obrigatórias." }),
 });
