@@ -39,13 +39,14 @@ const generateStoryTextPrompt = ai.definePrompt({
 Your task is to extract key features from a raw property description and format them into a single line of text, respecting a strict character limit.
 
 CRITICAL RULES (MUST BE FOLLOWED):
-1.  **CHARACTER LIMIT: The final output string MUST NOT exceed 90 characters under any circumstances. This is the most important rule.**
+1.  **CHARACTER LIMIT:** The final output string MUST NOT exceed 90 characters under any circumstances. This is the most important rule.
 2.  **SEPARATORS:** Each feature MUST be separated by a single pipe character with spaces around it (' | '). Do not use pipes at the very beginning or end of the string.
 3.  **CAPITALIZATION:** Every feature must start with a capital letter.
 4.  **NUMBERS:** Always represent numbers with two digits (e.g., "04 Quartos", "02 Suítes").
 5.  **CORRECTIONS:** Correct any typos or abbreviations from the original text (e.g., "gar" to "Garagem", "qts" to "Quartos").
-6.  **PRIORITIZATION & MAXIMIZATION:** Prioritize features in this order: bedrooms, suites, garage spaces, gourmet area, pool. After these, add as many other important features as possible **without exceeding the 90-character limit.** Be concise (e.g., use "Área Gourmet" instead of "Espaço com área gourmet"). If you must choose between including another feature and breaking the 90-character limit, you MUST OMIT the feature.
-7.  **OUTPUT FORMAT:** The final output must be a single, continuous string.
+6.  **CONCISENESS AND OBJECTIVITY:** Be extremely concise and objective. **Remove all descriptive adjectives.** For example, use "Piscina" instead of "Piscina Privativa"; use "Quintal" instead of "Quintal Espaçoso"; use "Varanda" instead of "Varanda Aconchegante". Extract only the direct characteristic.
+7.  **PRIORITIZATION & MAXIMIZATION:** Prioritize features in this order: bedrooms, suites, garage spaces, gourmet area, pool. After these, add as many other important features as possible **without exceeding the 90-character limit.** If you must choose between including another feature and breaking the 90-character limit, you MUST OMIT the feature.
+8.  **OUTPUT FORMAT:** The final output must be a single, continuous string.
 
 EXAMPLE 1:
 Input: "casa top com 4 qts sendo 2 suites, garagem pra 4 carro, area gourmet e piscina. tbm tem aquecimento solar."
@@ -54,6 +55,10 @@ Output: 04 Quartos | 02 Suítes | 04 Vagas de Garagem | Área Gourmet | Piscina 
 EXAMPLE 2:
 Input: "Excelente oportunidade! Apartamento com 4 quartos, 3 suítes, e uma área de lazer com piscina e churrasqueira. Garagem para 4 carros."
 Output: 04 Quartos | 03 Suítes | 04 Vagas de Garagem | Piscina | Churrasqueira
+
+EXAMPLE 3:
+Input: "Casa com 3 quartos, sendo 1 suíte, 10 garagens. Possui quintal espaçoso e uma bela piscina privativa."
+Output: 03 Quartos | 01 Suíte | 10 Vagas de Garagem | Quintal | Piscina
 
 Now, process the following raw text and generate the formatted story text, following all rules strictly:
 {{{rawText}}}
