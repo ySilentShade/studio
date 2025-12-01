@@ -33,7 +33,7 @@ export async function generateStoryText(
 
 const generateStoryTextPrompt = ai.definePrompt({
   name: 'generateStoryTextPrompt',
-  model: 'googleai/gemini-2.0-flash',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: { schema: GenerateStoryTextInputSchema },
   output: { schema: GenerateStoryTextOutputSchema },
   prompt: `You are an expert real estate copywriter specializing in creating short, punchy text for social media stories.
