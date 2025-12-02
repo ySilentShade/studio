@@ -71,30 +71,41 @@ const formatPropertyFeaturesFlow = ai.defineFlow(
     outputSchema: FormatPropertyFeaturesOutputSchema,
   },
   async input => {
-    const {output} = await formatPropertyFeaturesPrompt(input);
+    console.log('[formatPropertyFeaturesFlow] Iniciando fluxo...');
+    console.log('[formatPropertyFeaturesFlow] Input recebido:', JSON.stringify(input));
 
-    if (!output || typeof output.formattedFeatures !== 'string') {
-      console.error(
-        'AI flow received undefined output or missing/invalid formattedFeatures from prompt. Full prompt output:',
-        output
-      );
-      throw new Error(
-        'A IA não retornou uma formatação válida para as características. O resultado pode estar vazio ou malformado.'
-      );
+    try {
+      const {output} = await formatPropertyFeaturesPrompt(input);
+      console.log('[formatPropertyFeaturesFlow] Output da IA:', JSON.stringify(output));
+
+      if (!output || typeof output.formattedFeatures !== 'string') {
+        console.error(
+          '[formatPropertyFeaturesFlow] Erro: A IA retornou um output inválido ou vazio. Output:',
+          output
+        );
+        throw new Error(
+          'A IA não retornou uma formatação válida para as características. O resultado pode estar vazio ou malformado.'
+        );
+      }
+
+      let formattedFeatures = output.formattedFeatures;
+
+      if (formattedFeatures && !formattedFeatures.trim().endsWith(';')) {
+          const lines = formattedFeatures.trim().split('\n');
+          const lastLine = lines[lines.length - 1];
+          if (lastLine) {
+              lines[lines.length - 1] = lastLine.endsWith(';') ? lastLine : lastLine + ';';
+              formattedFeatures = lines.join('\n');
+          }
+      }
+      
+      const result = {formattedFeatures: formattedFeatures.trim()};
+      console.log('[formatPropertyFeaturesFlow] Resultado final:', JSON.stringify(result));
+      return result;
+    } catch (error) {
+      console.error('[formatPropertyFeaturesFlow] Erro catastrófico no fluxo:', error);
+      // Re-throw para que o front-end possa capturar o erro
+      throw error;
     }
-
-    let formattedFeatures = output.formattedFeatures;
-
-    if (formattedFeatures && !formattedFeatures.trim().endsWith(';')) {
-        const lines = formattedFeatures.trim().split('\n');
-        const lastLine = lines[lines.length - 1];
-        if (lastLine) {
-            lines[lines.length - 1] = lastLine.endsWith(';') ? lastLine : lastLine + ';';
-            formattedFeatures = lines.join('\n');
-        }
-    }
-    
-    // Ensure the final output is just the text, without extra spaces at the beginning or end.
-    return {formattedFeatures: formattedFeatures.trim()};
   }
 );

@@ -72,24 +72,36 @@ const generateStoryTextFlow = ai.defineFlow(
     outputSchema: GenerateStoryTextOutputSchema,
   },
   async (input) => {
-    const { output } = await generateStoryTextPrompt(input);
+    console.log('[generateStoryTextFlow] Iniciando fluxo...');
+    console.log('[generateStoryTextFlow] Input recebido:', JSON.stringify(input));
 
-    if (!output?.storyText) {
-      throw new Error(
-        'AI flow failed to generate story text. The output may be empty or malformed.'
-      );
-    }
-    
-    // Final check to ensure no leading/trailing pipes or spaces
-    let storyText = output.storyText.trim();
-    if (storyText.startsWith('|')) {
-        storyText = storyText.substring(1).trim();
-    }
-    if (storyText.endsWith('|')) {
-        storyText = storyText.slice(0, -1).trim();
-    }
+    try {
+      const { output } = await generateStoryTextPrompt(input);
+      console.log('[generateStoryTextFlow] Output da IA:', JSON.stringify(output));
 
-    return { storyText };
+      if (!output?.storyText) {
+        console.error('[generateStoryTextFlow] Erro: A IA retornou um output inválido ou vazio. Output:', output);
+        throw new Error(
+          'AI flow failed to generate story text. The output may be empty or malformed.'
+        );
+      }
+      
+      // Final check to ensure no leading/trailing pipes or spaces
+      let storyText = output.storyText.trim();
+      if (storyText.startsWith('|')) {
+          storyText = storyText.substring(1).trim();
+      }
+      if (storyText.endsWith('|')) {
+          storyText = storyText.slice(0, -1).trim();
+      }
+
+      const result = { storyText };
+      console.log('[generateStoryTextFlow] Resultado final:', JSON.stringify(result));
+      return result;
+    } catch (error) {
+      console.error('[generateStoryTextFlow] Erro catastrófico no fluxo:', error);
+      // Re-throw para que o front-end possa capturar o erro
+      throw error;
+    }
   }
 );
-    
